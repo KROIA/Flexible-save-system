@@ -103,6 +103,7 @@ namespace SaveLoadSystem.Editor
                     {
                         ISaveID saveID_interface = objs[i] as ISaveID;
 
+                        
                         if (allIdList.ContainsKey(saveID_interface.GetID()))
                         {
                             if (!conflicts.ContainsKey(saveID_interface.GetID()))
@@ -123,6 +124,7 @@ namespace SaveLoadSystem.Editor
             {
                 string text = "";
                 int counter = 0;
+                int index = 0;
                 foreach (var conflict in conflicts)
                 {
                     foreach (var el in conflict.Value)
@@ -135,6 +137,8 @@ namespace SaveLoadSystem.Editor
                             break;
                         }
                     }
+                    Debug.LogWarning("Conflict [" + index + "]: " + allIdList[conflict.Key].name + " ID=" + conflict.Key, allIdList[conflict.Key]);
+                    ++index;
                 }
                 if (IDConflictPopup("Scriptable Objects ID Conflict", text))
                 {
@@ -177,14 +181,32 @@ namespace SaveLoadSystem.Editor
                     if (saveIDs[j] is ISaveID)
                     {
                         ISaveID saveID_interface = saveIDs[j] as ISaveID;
+
+                        GameObject inAllList;
+                        allIdList.TryGetValue(saveID_interface.GetID(), out inAllList);
+                        bool isComponent = false;
+                        if (inAllList != null)
+                        {
+                            Component[] ids = inAllList.GetComponents(typeof(ISaveID));
+                            foreach (var id in ids)
+                                if (id == saveIDs[j])
+                                    isComponent = true;
+                        }
+
                         if (allIdList.ContainsKey(saveID_interface.GetID()))
                         {
-                            if(!conflicts.ContainsKey(saveID_interface.GetID()))
-                                conflicts.Add(saveID_interface.GetID(), new List<GameObject>());
-                            List<GameObject> list;
-                            conflicts.TryGetValue(saveID_interface.GetID(), out list);
-                            if (list != null)
-                                list.Add(objs[i]);
+                            if (!isComponent)
+                            {
+                                if (!conflicts.ContainsKey(saveID_interface.GetID()))
+                                {
+                                    conflicts.Add(saveID_interface.GetID(), new List<GameObject>());
+                                }
+
+                                List<GameObject> list;
+                                conflicts.TryGetValue(saveID_interface.GetID(), out list);
+                                if (list != null)
+                                    list.Add(objs[i]);
+                            }
                             goto nextObj;
                         }
                         allIdList.Add(saveID_interface.GetID(), objs[i]);
@@ -196,6 +218,7 @@ namespace SaveLoadSystem.Editor
             {
                 string text = "";
                 int counter = 0;
+                int index = 0;
                 foreach (var conflict in conflicts)
                 {
                     foreach (var el in conflict.Value)
@@ -208,6 +231,9 @@ namespace SaveLoadSystem.Editor
                             break;
                         }
                     }
+
+                    Debug.LogWarning("Conflict [" + index + "]: " + allIdList[conflict.Key].name + " ID=" + conflict.Key, allIdList[conflict.Key]);
+                    ++index;
                 }
                 if (IDConflictPopup("GameObjects ID Conflict", text))
                 {

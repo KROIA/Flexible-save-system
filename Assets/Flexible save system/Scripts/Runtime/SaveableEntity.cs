@@ -120,11 +120,37 @@ namespace SaveLoadSystem
 
 
         static Dictionary<string, SaveableEntity> m_allSaveables = new Dictionary<string, SaveableEntity>();
-        //static List<SaveableEntity> m_toDelete = new List<SaveableEntity>();
-        //static List<SaveableEntity> m_addToAll = new List<SaveableEntity>();
         List<string> m_childIDsOfThis = new List<string>();
 
+        private void Awake()
+        {
+            // Check if the same ID already exists. This will be the case by cloning the GameObject
+            // If so, generate a unique ID for this
+            if (m_ID != "")
+            {
+                if (m_allSaveables.TryGetValue(m_ID, out SaveableEntity sav))
+                {
+                    if (sav != null && sav != this)
+                    {
+                        Debug.Log("Awake: " + m_ID);
+                        GenerateID();
+                        //m_allSaveables.Add(m_ID, this);
+                    }
+                }
+                else
+                    m_allSaveables.Add(m_ID, this);
+            }
+            else
+                GenerateID();
+            if (m_prefabID != "")
+                PrefabChildIdentifier();
+        }
+        
 
+        private void OnDestroy()
+        {
+            m_allSaveables.Remove(m_ID);
+        }
         void PrefabChildIdentifier()
         {
             List<SaveableEntity> childs = ObjectFinder.GetFirstChildLayerOfType<SaveableEntity>(gameObject);
@@ -161,29 +187,7 @@ namespace SaveLoadSystem
             }
             return deleted;
         }
-        private void Awake()
-        {
-            if (m_prefabID != "")
-                PrefabChildIdentifier();
-        }
-        // Start is called before the first frame update
-        void Start()
-        {
-            if (m_ID == "")
-                GenerateID();
-
-        }
-
-        // Update is called once per frame
-        void Update()
-        {
-
-        }
-
-        private void OnDestroy()
-        {
-            m_allSaveables.Remove(m_ID);
-        }
+        
 
         public string GetID()
         {
@@ -191,7 +195,17 @@ namespace SaveLoadSystem
         }
         public void SetID(string ID)
         {
+            string oldID = m_ID;
             m_ID = ID;
+            if (m_allSaveables.TryGetValue(oldID, out SaveableEntity sav))
+            {
+                m_allSaveables.Remove(oldID);
+            }
+            if (m_allSaveables.TryGetValue(m_ID, out SaveableEntity sav2))
+            {
+                m_allSaveables.Remove(m_ID);
+            }
+            m_allSaveables.Add(m_ID, this);
         }
         public string GetPrefabID()
         {
@@ -434,7 +448,7 @@ namespace SaveLoadSystem
 
             return obj;
         warningMessage:
-            Debug.LogWarning("Something went wrong while trying to create the Object: \"" + objectName + " "+ ((ObjectMetadata)meta).thisID+
+            Debug.LogWarning("Something went wrong while trying to create the Object: \"" + objectName + "\" ID: \""+ ((ObjectMetadata)meta).thisID+
                              "\" as child of: \"" + parentName + "\"");
             return obj;
         warningMessageSave:
@@ -467,7 +481,10 @@ namespace SaveLoadSystem
             if (obj != null)
             {
                 m_allSaveables.Remove(meta.thisID);
+
                 DestroyImmediate(obj.gameObject);
+                
+
             }
 
             GameObject prefab = SaveablePrefabs.GetPrefab(meta.prefabID);
@@ -476,8 +493,13 @@ namespace SaveLoadSystem
                 Debug.LogWarning("Can't load object, no prefab was found for " + meta.name);
                 return null;
             }
-
-            GameObject newObj = Instantiate(prefab);
+            GameObject newObj = null;
+           // if (Application.isPlaying)
+                newObj = Instantiate(prefab);
+           // else
+           //     newObj = (GameObject)PrefabUtility.InstantiatePrefab(prefab as GameObject);
+            
+            
             SaveableEntity newSav = newObj.GetComponent<SaveableEntity>();
             SetupInstantiated(meta, newSav);
             return newObj;
@@ -495,11 +517,12 @@ namespace SaveLoadSystem
                     newSav.DestroyChild(child, childs);
                 }
             }
-            m_allSaveables.Add(meta.thisID, newSav);
+            //m_allSaveables.Add(meta.thisID, newSav);
         }
         void DestroyChild(string childID, List<SaveableEntity> childs = null)
         {
-            if(childs == null)
+            
+            if (childs == null)
                 childs = ObjectFinder.GetFirstChildLayerOfType<SaveableEntity>(gameObject);
             for (int i = 0; i < childs.Count; ++i)
             {
@@ -560,6 +583,9 @@ namespace SaveLoadSystem
             else
             {
                 transform.SetParent(parent.transform);
+                List<ISaveable> signalReceiver = ObjectFinder.GetFirstParentOfType<ISaveable>(parent.gameObject);
+                foreach (var receiver in signalReceiver)
+                    receiver.GotAddedAsChild(transform.gameObject, parent.gameObject);
             }
 
             m_parent = parent;

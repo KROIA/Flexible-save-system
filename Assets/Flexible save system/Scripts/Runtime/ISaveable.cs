@@ -8,6 +8,7 @@ namespace SaveLoadSystem
         bool NeedsToBeSaved();
 
         // Return true, if this object needs to be reinstantiated at load or false if the loading is enough
+        // This only works for Prefab Objects
         bool NeedsReinstantiation();
 
         // Return the serializable data structure which shuld be stored

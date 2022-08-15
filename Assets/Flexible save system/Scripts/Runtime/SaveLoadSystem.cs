@@ -24,6 +24,8 @@ namespace SaveLoadSystem
             {
                 if (m_instance == null)
                     m_instance = FindObjectOfType<SaveLoadSystem>();
+                if (m_instance == null)
+                    Debug.LogWarning("No instance of SaveLoadSystem in the scene");
                 return m_instance;
             }
         }
@@ -108,6 +110,11 @@ namespace SaveLoadSystem
             LoadState(state);
             long endT = System.DateTimeOffset.Now.ToUnixTimeMilliseconds();
             Debug.Log("Loading time: " + (endT - startT) + "ms");
+        }
+        public static void Delete()
+        {
+            if (File.Exists(fullSavePath))
+                File.Delete(fullSavePath);
         }
 
         static void SaveFile(object state)

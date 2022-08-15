@@ -14,14 +14,14 @@ namespace SaveLoadSystem
         static void GetFirstParentOfType_internal<T>(GameObject root, List<T> list,
                                                     bool breakAfterFirstMatch, bool breakAfterFirstParentMatch, bool recursive)
         {
-            Transform parentT = root.transform.parent;
-            GameObject parent = null;
-            if (parentT != null)
-                parent = parentT.gameObject;
-            if (parent == null)
+            //Transform parentT = root.transform.parent;
+            //GameObject parent = null;
+            //if (parentT != null)
+            //    parent = parentT.gameObject;
+            if (root == null)
                 return;
 
-            T[] comps = parent.GetComponents<T>();
+            T[] comps = root.GetComponents<T>();
             foreach (var comp in comps)
             {
                 list.Add(comp);
@@ -30,9 +30,9 @@ namespace SaveLoadSystem
             }
             if (list.Count > 0 && breakAfterFirstParentMatch)
                 return;
-            if (!recursive)
+            if (!recursive || root.transform.parent == null)
                 return;
-            GetFirstParentOfType_internal<T>(parent, list, breakAfterFirstMatch, breakAfterFirstParentMatch, recursive);
+            GetFirstParentOfType_internal<T>(root.transform.parent.gameObject, list, breakAfterFirstMatch, breakAfterFirstParentMatch, recursive);
         }
 
 
