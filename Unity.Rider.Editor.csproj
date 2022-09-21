@@ -9,7 +9,7 @@
     <ProductVersion>10.0.20506</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
     <RootNamespace></RootNamespace>
-    <ProjectGuid>{B1BD2ABE-243E-4B25-A62D-AA4A032F454B}</ProjectGuid>
+    <ProjectGuid>{456893E9-8B26-8CCB-6555-3B4F6DAF5F5B}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <AssemblyName>Unity.Rider.Editor</AssemblyName>
@@ -690,21 +690,23 @@
     <Reference Include="System.Xml.XPath.XDocument">
       <HintPath>C:\Program Files\Unity\Hub\Editor\2020.3.15f2\Editor\Data\MonoBleedingEdge\lib\mono\4.7.1-api\Facades\System.Xml.XPath.XDocument.dll</HintPath>
     </Reference>
-    <Reference Include="UnityEditor.UI">
-      <HintPath>Library\ScriptAssemblies\UnityEditor.UI.dll</HintPath>
-    </Reference>
-    <Reference Include="UnityEngine.UI">
-      <HintPath>Library\ScriptAssemblies\UnityEngine.UI.dll</HintPath>
-    </Reference>
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="UnityEditor.TestRunner.csproj">
-      <Project>{1F23A2C8-89E9-6F05-A578-2008C497DF08}</Project>
+      <Project>{07F3BE89-57DC-8983-F4F2-021F990214B1}</Project>
       <Name>UnityEditor.TestRunner</Name>
     </ProjectReference>
     <ProjectReference Include="UnityEngine.TestRunner.csproj">
-      <Project>{74E6A41B-F7A6-FDEA-EB8C-5844DDA23EEF}</Project>
+      <Project>{53186A7C-5520-1517-0F68-3B6293E0D8F6}</Project>
       <Name>UnityEngine.TestRunner</Name>
+    </ProjectReference>
+    <ProjectReference Include="UnityEditor.UI.csproj">
+      <Project>{C3F102DC-3315-428B-C012-8ED75397AAE6}</Project>
+      <Name>UnityEditor.UI</Name>
+    </ProjectReference>
+    <ProjectReference Include="UnityEngine.UI.csproj">
+      <Project>{BB2F89CB-6A52-8A90-FADB-0A2FF26AE37B}</Project>
+      <Name>UnityEngine.UI</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

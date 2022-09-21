@@ -9,7 +9,7 @@
     <ProductVersion>10.0.20506</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
     <RootNamespace></RootNamespace>
-    <ProjectGuid>{1B7EA859-BAA1-D738-4441-4125314091B7}</ProjectGuid>
+    <ProjectGuid>{92C8BA69-E638-5EA3-9F6A-D4CAA638B467}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <AssemblyName>Assembly-CSharp-Editor</AssemblyName>
@@ -63,9 +63,6 @@
     <Compile Include="Assets\Flexible save system\Scripts\Editor\SaveIDManagerEditor.cs" />
     <Compile Include="Assets\Flexible save system\Scripts\Editor\SavablePrefabsEditor.cs" />
     <Compile Include="Assets\Flexible save system\Scripts\Editor\StartupUtilities.cs" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Assets\AssetStoreTools\Editor\AssetStoreTools.dll" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="UnityEngine">
@@ -310,9 +307,6 @@
     </Reference>
     <Reference Include="Unity.Plastic.Antlr3.Runtime">
       <HintPath>Library\PackageCache\com.unity.collab-proxy@1.7.1\Lib\Editor\PlasticSCM\Unity.Plastic.Antlr3.Runtime.dll</HintPath>
-    </Reference>
-    <Reference Include="AssetStoreTools">
-      <HintPath>Assets\AssetStoreTools\Editor\AssetStoreTools.dll</HintPath>
     </Reference>
     <Reference Include="log4netPlastic">
       <HintPath>Library\PackageCache\com.unity.collab-proxy@1.7.1\Lib\Editor\PlasticSCM\log4netPlastic.dll</HintPath>
@@ -680,57 +674,59 @@
     <Reference Include="System.Xml.XPath.XDocument">
       <HintPath>C:\Program Files\Unity\Hub\Editor\2020.3.15f2\Editor\Data\MonoBleedingEdge\lib\mono\4.7.1-api\Facades\System.Xml.XPath.XDocument.dll</HintPath>
     </Reference>
-    <Reference Include="UnityEditor.UI">
-      <HintPath>Library\ScriptAssemblies\UnityEditor.UI.dll</HintPath>
-    </Reference>
-    <Reference Include="UnityEngine.UI">
-      <HintPath>Library\ScriptAssemblies\UnityEngine.UI.dll</HintPath>
-    </Reference>
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="Assembly-CSharp.csproj">
-      <Project>{DA9A84A5-BD67-60B6-5397-5B5C1C5E31A2}</Project>
+      <Project>{CE7CE648-8F31-100B-1763-5C2C37B8C6E9}</Project>
       <Name>Assembly-CSharp</Name>
     </ProjectReference>
     <ProjectReference Include="UnityEngine.TestRunner.csproj">
-      <Project>{74E6A41B-F7A6-FDEA-EB8C-5844DDA23EEF}</Project>
+      <Project>{53186A7C-5520-1517-0F68-3B6293E0D8F6}</Project>
       <Name>UnityEngine.TestRunner</Name>
     </ProjectReference>
     <ProjectReference Include="UnityEditor.TestRunner.csproj">
-      <Project>{1F23A2C8-89E9-6F05-A578-2008C497DF08}</Project>
+      <Project>{07F3BE89-57DC-8983-F4F2-021F990214B1}</Project>
       <Name>UnityEditor.TestRunner</Name>
     </ProjectReference>
     <ProjectReference Include="Unity.VSCode.Editor.csproj">
-      <Project>{DB76527B-F878-BD1A-148D-9E940E245D21}</Project>
+      <Project>{2886F326-C4B6-FF2B-FEB5-9C8A8FA4F74D}</Project>
       <Name>Unity.VSCode.Editor</Name>
     </ProjectReference>
     <ProjectReference Include="Unity.TextMeshPro.Editor.csproj">
-      <Project>{E14890BD-DA8D-2C2F-34DE-770A193E4646}</Project>
+      <Project>{CB5B8524-A0F2-99E1-BF75-BCB20928DC3D}</Project>
       <Name>Unity.TextMeshPro.Editor</Name>
     </ProjectReference>
     <ProjectReference Include="Unity.VisualStudio.Editor.csproj">
-      <Project>{5D876368-0D7C-389F-0059-5D04F95E3D46}</Project>
+      <Project>{D82325B3-A3F8-FDD7-3E66-497A1EDBDD18}</Project>
       <Name>Unity.VisualStudio.Editor</Name>
     </ProjectReference>
     <ProjectReference Include="Unity.Timeline.Editor.csproj">
-      <Project>{1B02220A-8A6E-F224-C042-07B2CC41271D}</Project>
+      <Project>{2806A59A-E900-35FF-44F8-E5E594869FDE}</Project>
       <Name>Unity.Timeline.Editor</Name>
     </ProjectReference>
     <ProjectReference Include="Unity.Timeline.csproj">
-      <Project>{A905AB46-B053-56C0-10BC-B289C7A684A1}</Project>
+      <Project>{6FA772D4-6C5C-672F-985A-FBD5CBB9F188}</Project>
       <Name>Unity.Timeline</Name>
     </ProjectReference>
     <ProjectReference Include="Unity.TextMeshPro.csproj">
-      <Project>{A2E68BE0-9C01-49E6-EBAD-F28E4300A442}</Project>
+      <Project>{AE691507-61DC-F86C-DD3F-A0C3B1EF651D}</Project>
       <Name>Unity.TextMeshPro</Name>
     </ProjectReference>
+    <ProjectReference Include="UnityEditor.UI.csproj">
+      <Project>{C3F102DC-3315-428B-C012-8ED75397AAE6}</Project>
+      <Name>UnityEditor.UI</Name>
+    </ProjectReference>
     <ProjectReference Include="Unity.PlasticSCM.Editor.csproj">
-      <Project>{30757953-7775-D48F-EE5B-3E20BFD5467D}</Project>
+      <Project>{B8B4570F-4006-6288-E333-5D39F118D9E7}</Project>
       <Name>Unity.PlasticSCM.Editor</Name>
     </ProjectReference>
     <ProjectReference Include="Unity.Rider.Editor.csproj">
-      <Project>{B1BD2ABE-243E-4B25-A62D-AA4A032F454B}</Project>
+      <Project>{456893E9-8B26-8CCB-6555-3B4F6DAF5F5B}</Project>
       <Name>Unity.Rider.Editor</Name>
+    </ProjectReference>
+    <ProjectReference Include="UnityEngine.UI.csproj">
+      <Project>{BB2F89CB-6A52-8A90-FADB-0A2FF26AE37B}</Project>
+      <Name>UnityEngine.UI</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

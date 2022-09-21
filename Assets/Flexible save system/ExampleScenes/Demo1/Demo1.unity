@@ -294,7 +294,10 @@ MonoBehaviour:
     delete a Object, than start Play again an load the \n     save via the \"SaveLoadSystem\"
     -> you will se, the deleted object gets spawned back \n     in the scene. This
     will only work if the object is a prefab.\n\nNote:\nTransformdata will only be
-    saved on the object with the SaveableEntity component!"
+    saved on the object with the SaveableEntity component!  It will be saved automatically
+    by the SaveableEntity but you can turn off this feature by calling the Function
+    SetSaveTransform(false) on the SaveableEntity or enable the \"ShowBase\" feature
+    in the Inspector of the GameObject and there you find \"Save Transform\"."
 --- !u!222 &232512540
 CanvasRenderer:
   m_ObjectHideFlags: 0

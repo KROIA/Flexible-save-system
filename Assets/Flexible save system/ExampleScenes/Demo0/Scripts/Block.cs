@@ -15,7 +15,15 @@ public class Block : MonoBehaviour, ISaveable
     // Start is called before the first frame update
     void Start()
     {
-        
+        // If you do not want that the SaveSystem saves the Transform data (position, rotation and scale),
+        // than you can turn it off by calling the SetSaveTransform(false) on the SaveableEntity Component.
+        // You also can switch this on and off for each SaveableEntity in the Editor by cklicking on "Show Base" in the "SaveSystem ID Management" display and
+        // than click on "Save Transform"
+        SaveableEntity thisSaveable = GetComponent<SaveableEntity>();
+        if(thisSaveable != null)
+        {
+            thisSaveable.SetSaveTransform(false);
+        }
     }
 
     // Update is called once per frame

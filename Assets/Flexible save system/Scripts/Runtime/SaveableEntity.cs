@@ -102,6 +102,7 @@ namespace SaveLoadSystem
             public bool hasPrefab;
             public string prefabID;   // Prefab ID for instantiating this gameObject
             public string thisChildID; // ID for this in case this is a child of a SaveableEntity
+            public bool saveTransform; 
             public TransformData transformData; // Location, Rotation and scale of this gameObject
             public List<string> deletedChilds;
             public bool needsToBeReinstantiated;
@@ -114,6 +115,7 @@ namespace SaveLoadSystem
         [SerializeField] string m_childID;
         [SerializeField] string m_prefabID;
         [SerializeField] bool m_autoSetPrefabID = true;
+        [SerializeField] bool m_saveTransform = true;
 
         ObjectMetadata m_metadata;
         Dictionary<string, object> m_dictionary;
@@ -211,6 +213,14 @@ namespace SaveLoadSystem
         {
             return m_prefabID;
         }
+        public void SetSaveTransform(bool enable)
+        {
+            m_saveTransform = enabled;
+        }
+        public bool GetSaveTransform()
+        {
+            return m_saveTransform;
+        }
         public void ResetTransform()
         {
             transform.localPosition = m_metadata.transformData.local.position.ToVector3();
@@ -228,8 +238,9 @@ namespace SaveLoadSystem
                 SetID(m_metadata.thisID);
                 m_prefabID = m_metadata.prefabID;
                 m_childID = m_metadata.thisChildID;
-
-                ResetTransform();
+                m_saveTransform = m_metadata.saveTransform;
+                if(m_saveTransform)
+                    ResetTransform();
             }
         }
 
@@ -281,9 +292,12 @@ namespace SaveLoadSystem
                 parentName = transform.parent.name;
             }
             TransformData transformData = new TransformData();
-            transformData.local.position.FromVector3(transform.localPosition);
-            transformData.local.rotation.FromQuaternion(transform.localRotation);
-            transformData.local.scale.FromVector3(transform.localScale);
+            if (m_saveTransform)
+            {
+                transformData.local.position.FromVector3(transform.localPosition);
+                transformData.local.rotation.FromQuaternion(transform.localRotation);
+                transformData.local.scale.FromVector3(transform.localScale);
+            }
 
             bool hasPrefab = true;
             if (m_prefabID == "")
@@ -325,6 +339,7 @@ namespace SaveLoadSystem
                 hasPrefab = hasPrefab,
                 prefabID = m_prefabID,
                 thisChildID = m_childID,
+                saveTransform = m_saveTransform,
                 transformData = transformData,
                 deletedChilds = GetDeletedChilds(),
                 needsToBeReinstantiated = needsReinstantiate

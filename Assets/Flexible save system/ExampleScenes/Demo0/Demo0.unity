@@ -202,8 +202,12 @@ MonoBehaviour:
     delete a Object, than start Play again an load the \n     save via the \"SaveLoadSystem\"
     -> you will se, the deleted object gets spawned back \n     in the scene. This
     will only work if the object is a prefab.\n\n\nNote:\nTransformdata will only
-    be saved on the object with the SaveableEntity component!\n\nCheck out the code
-    of Block and Sphere to learn more about the implementation of the saveLoadSystem"
+    be saved on the object with the SaveableEntity component! It will be saved automatically
+    by the SaveableEntity but you can turn off this feature by calling the Function
+    SetSaveTransform(false) on the SaveableEntity or enable the \"ShowBase\" feature
+    in the Inspector of the GameObject and there you find \"Save Transform\".\n\nCheck
+    out the code of Block and Sphere to learn more about the implementation of the
+    saveLoadSystem"
 --- !u!222 &97949513
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -326,6 +330,7 @@ MonoBehaviour:
   m_childID: 
   m_prefabID: 
   m_autoSetPrefabID: 0
+  m_saveTransform: 1
 --- !u!114 &444103966
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -603,6 +608,10 @@ PrefabInstance:
       propertyPath: m_ID
       value: 5ffc3585-9c19-47ea-8f8d-16bcd4805d19
       objectReference: {fileID: 0}
+    - target: {fileID: 5799051530628468686, guid: 72d14a90a85e9c34292d16450c7ba4f1, type: 3}
+      propertyPath: m_saveTransform
+      value: 0
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 72d14a90a85e9c34292d16450c7ba4f1, type: 3}
 --- !u!1 &963194225
@@ -725,6 +734,7 @@ MonoBehaviour:
   m_childID: 
   m_prefabID: 
   m_autoSetPrefabID: 0
+  m_saveTransform: 1
 --- !u!114 &1270948146
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -851,6 +861,7 @@ MonoBehaviour:
   m_childID: 
   m_prefabID: 
   m_autoSetPrefabID: 0
+  m_saveTransform: 1
 --- !u!114 &1509569853
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -977,6 +988,7 @@ MonoBehaviour:
   m_childID: 
   m_prefabID: 
   m_autoSetPrefabID: 0
+  m_saveTransform: 1
 --- !u!114 &1615697603
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1103,6 +1115,7 @@ MonoBehaviour:
   m_childID: 
   m_prefabID: 
   m_autoSetPrefabID: 0
+  m_saveTransform: 1
 --- !u!114 &1617293429
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1229,6 +1242,7 @@ MonoBehaviour:
   m_childID: 
   m_prefabID: 
   m_autoSetPrefabID: 0
+  m_saveTransform: 1
 --- !u!114 &1673694646
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1598,6 +1612,7 @@ MonoBehaviour:
   m_childID: 
   m_prefabID: 
   m_autoSetPrefabID: 0
+  m_saveTransform: 1
 --- !u!114 &1908134035
 MonoBehaviour:
   m_ObjectHideFlags: 0
