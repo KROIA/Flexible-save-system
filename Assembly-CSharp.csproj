@@ -696,6 +696,10 @@
       <Project>{BB2F89CB-6A52-8A90-FADB-0A2FF26AE37B}</Project>
       <Name>UnityEngine.UI</Name>
     </ProjectReference>
+    <ProjectReference Include="asset-store-tools-editor.csproj">
+      <Project>{E7A79974-8BBB-4CF2-0DE1-6E11D30AB2A8}</Project>
+      <Name>asset-store-tools-editor</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Target Name="GenerateTargetFrameworkMonikerAttribute" />
