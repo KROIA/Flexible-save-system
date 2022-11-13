@@ -52,20 +52,6 @@ namespace SaveLoadSystem
         public struct Vector4Data
         {
             public float x, y, z, w;
-            public Vector4Data(Vector4 vec)
-            {
-                x = vec.x;
-                y = vec.y;
-                z = vec.z;
-                w = vec.w;
-            }
-            public Vector4Data(Quaternion quat)
-            {
-                x = quat.x;
-                y = quat.y;
-                z = quat.z;
-                w = quat.w;
-            }
             public void FromVector4(Vector4 v)
             {
                 x = v.x;
@@ -120,7 +106,6 @@ namespace SaveLoadSystem
             public TransformData transformData; // Location, Rotation and scale of this gameObject
             public List<string> deletedChilds;
             public bool needsToBeReinstantiated;
-
         }
 
         SaveableEntity m_parent = null;
@@ -148,7 +133,7 @@ namespace SaveLoadSystem
                 {
                     if (sav != null && sav != this)
                     {
-                        Debug.Log("Awake: " + m_ID);
+                        //Debug.Log("Awake: " + m_ID);
                         GenerateID();
                         //m_allSaveables.Add(m_ID, this);
                     }
@@ -343,7 +328,6 @@ namespace SaveLoadSystem
                 if(o != null)
                     childData.Add(o);
             }
-
             ObjectMetadata meta = new ObjectMetadata()
             {
                 name = gameObject.name,
@@ -357,7 +341,7 @@ namespace SaveLoadSystem
                 transformData = transformData,
                 deletedChilds = GetDeletedChilds(),
                 needsToBeReinstantiated = needsReinstantiate
-            };
+        };
 
             state["ObjectMetadata"] = meta;
             state["ChildData"] = childData;

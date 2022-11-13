@@ -2,6 +2,8 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using SaveLoadSystem;
+
+[RequireComponent(typeof(SaveableEntity))]
 public class Block : MonoBehaviour, ISaveable
 {
     [SerializeField] float speed;
