@@ -60,9 +60,10 @@ crashlytics-build.properties
 Assets/AssetStoreTools.meta
 Assets/AssetStoreTools/
 
-Library
-UIElementsSchema
+Library/
+UIElementsSchema/
 obj
-Logs
-saves
-Temp
+Logs/
+saves/
+Temp/
+UserSettings/
