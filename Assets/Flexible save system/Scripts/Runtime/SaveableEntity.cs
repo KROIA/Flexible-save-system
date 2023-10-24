@@ -113,7 +113,6 @@ namespace SaveLoadSystem
         [SerializeField] string m_ID;
         [SerializeField] string m_childID;
         [SerializeField] string m_prefabID;
-        [SerializeField] bool m_autoSetPrefabID = true;
         [SerializeField] bool m_saveTransform = true;
 
         ObjectMetadata m_metadata;
@@ -253,6 +252,7 @@ namespace SaveLoadSystem
         {
             SetID(gameObject.name);
         }
+
 
 
         // Fills the savable dictionary object with all SaveableEntities
@@ -732,7 +732,6 @@ namespace SaveLoadSystem
                                                 childOfTHis.PostLoad();
                                             }
                                             return;
-                                            break;
                                         }
                                 }
                             }
