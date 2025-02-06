@@ -17,3 +17,15 @@ V01.02.00:
 + Saving of the transform data of the Object will be optional now and can be deactivated.
   It can be switched on and off by calling SetSaveTransform(...) on the SaveableEntity or
   by using the Inspector->SaveSystem ID Management->ShowBase->Save Transform.
+
+
+V01.02.01:
++ Added Vec4 and Quaternion constructor for SaveableEntity.Vector4Data
+
+V01.02.02:
+~ Removed Debug.Log
+~ Changed the example code
+
+V01.02.03:
+~ Moved the static moethodes for managing the SaveableEntity to the SaveableEntityManager class.
+  The SaveableEntityManager now also keeps track of all deleted objects so that they are not saved again.

@@ -4,7 +4,7 @@ using UnityEngine;
 
 namespace SaveLoadSystem
 {
-    public class SaveableEntity : MonoBehaviour, ISaveID
+    public partial class SaveableEntity : MonoBehaviour, ISaveID
     {
         [Serializable]
         public struct Vector2Data
@@ -119,7 +119,6 @@ namespace SaveLoadSystem
         Dictionary<string, object> m_dictionary;
 
 
-        static Dictionary<string, SaveableEntity> m_allSaveables = new Dictionary<string, SaveableEntity>();
         List<string> m_childIDsOfThis = new List<string>();
 
         private void Awake()
@@ -128,28 +127,21 @@ namespace SaveLoadSystem
             // If so, generate a unique ID for this
             if (m_ID != "")
             {
-                if (m_allSaveables.TryGetValue(m_ID, out SaveableEntity sav))
-                {
-                    if (sav != null && sav != this)
-                    {
-                        //Debug.Log("Awake: " + m_ID);
-                        GenerateID();
-                        //m_allSaveables.Add(m_ID, this);
-                    }
-                }
-                else
-                    m_allSaveables.Add(m_ID, this);
+                if(SaveableEntityManager.IDExists(m_ID))
+                    GenerateID();           
             }
             else
                 GenerateID();
             if (m_prefabID != "")
                 PrefabChildIdentifier();
+
+            SaveableEntityManager.AddSaveable(this);
         }
         
 
         private void OnDestroy()
         {
-            m_allSaveables.Remove(m_ID);
+            SaveableEntityManager.OnSaveableDeleted(this);
         }
         void PrefabChildIdentifier()
         {
@@ -195,17 +187,16 @@ namespace SaveLoadSystem
         }
         public void SetID(string ID)
         {
+            if(m_ID.CompareTo(ID) == 0)
+            {
+                return;
+            }
             string oldID = m_ID;
             m_ID = ID;
-            if (m_allSaveables.TryGetValue(oldID, out SaveableEntity sav))
+            if(!SaveableEntityManager.replaceID(oldID, m_ID))
             {
-                m_allSaveables.Remove(oldID);
+                SaveableEntityManager.AddSaveable(this);
             }
-            if (m_allSaveables.TryGetValue(m_ID, out SaveableEntity sav2))
-            {
-                m_allSaveables.Remove(m_ID);
-            }
-            m_allSaveables.Add(m_ID, this);
         }
         public string GetPrefabID()
         {
@@ -245,38 +236,11 @@ namespace SaveLoadSystem
         [ContextMenu("Generate ID")]
         public void GenerateID()
         {
-
-            SetID(Guid.NewGuid().ToString());
+            SetID(SaveableEntityManager.GenerateUniqueID());
         }
         public void GenerateID_NameBased()
         {
-            SetID(gameObject.name);
-        }
-
-
-
-        // Fills the savable dictionary object with all SaveableEntities
-        public static void GlobalSaveState(Dictionary<string, object> state)
-        {
-            SaveableEntity[] list = FindObjectsOfType<SaveableEntity>();
-
-            foreach (var saveable in list)
-            {
-
-                foreach (var child in ObjectFinder.GetFirstChildLayerOfType<SaveableEntity>(saveable.gameObject))
-                {
-                    child.m_parent = saveable;
-                }
-            }
-            foreach (var saveable in list)
-            {
-                if (saveable.m_parent == null)
-                {
-                    object d = saveable.SaveState();
-                    if (d != null)
-                        state[saveable.GetID()] = d;
-                }
-            }
+            SetID(SaveableEntityManager.GenerateUniqueID_nameBased(gameObject.name));
         }
 
         // Creates a save object which will be stored in the binary file
@@ -359,179 +323,6 @@ namespace SaveLoadSystem
         }
 
 
-        // Loads all saved Objects
-        public static void GlobalCreateFromSave(Dictionary<string, object> state)
-        {
-            m_allSaveables.Clear();
-            SaveableEntity[] list = FindObjectsOfType<SaveableEntity>();
-            foreach (var saveable in list)
-            {
-                m_allSaveables.Add(saveable.GetID(), saveable);
-            }
-            GlobalPreLoad();
-
-            foreach (var saveable in state)
-            {
-                CreateFromSave(saveable.Value);
-            }
-            GlobalPostLoad();
-        }
-
-        // Creates a instance of the saved gameObject, using its prefab and stored data
-        // This is a recursive function, if you have multiple prefab objects as childs of each other, 
-        // it will instantiate all them and set the correct parent of each instantiated child.
-        public static GameObject CreateFromSave(object state, SaveableEntity parent = null)
-        {
-            GameObject obj = null;
-            if(state == null)
-            {
-                Debug.LogWarning("Can't load state, state == null.");
-                return null;
-            }
-            var stateDictionary = (Dictionary<string, object>)state;
-
-            string objectName = "unknown";
-            string parentName = "unknown";
-            SaveableEntity savableOfInstance;
-            if (stateDictionary.TryGetValue("ObjectMetadata", out object meta))
-            {
-                if(meta == null)
-                    goto warningMessageSave;
-
-                ObjectMetadata metadata = (ObjectMetadata)meta;
-                objectName = metadata.name;
-                parentName = metadata.parentName;
-                if (metadata.needsToBeReinstantiated && metadata.hasPrefab)
-                {
-                    if(parent != null && metadata.thisChildID != "")
-                        parent.DestroyChild(metadata.thisChildID);
-                    obj = Reinstantiate(metadata);
-                }
-                else
-                {
-                    if (metadata.thisChildID != "" && parent != null)
-                    {
-                        List<SaveableEntity> childsOfParent = ObjectFinder.GetFirstChildLayerOfType<SaveableEntity>(parent.gameObject);
-                        foreach (var child in childsOfParent)
-                            if (child.m_childID == metadata.thisChildID)
-                                obj = child.gameObject;
-
-                        if (obj == null)
-                            Debug.Log("Can't find child with same childID in the prefab. childID: " + metadata.thisChildID, parent);
-                    }
-                    else
-                    {
-                        SaveableEntity o = FindID(metadata.thisID);
-                        if (o != null)
-                            obj = o.gameObject;
-                        else if (metadata.hasPrefab)
-                            obj = Reinstantiate(metadata);
-                    }
-                }
-                
-                if (obj == null)
-                    goto warningMessage;
-                savableOfInstance = obj.GetComponent<SaveableEntity>();
-                if (savableOfInstance == null)
-                {
-                    Debug.LogWarning("Prefab of saveable Object seems not to have the component SavableEntity", obj);
-                    goto warningMessage;
-                }
-                savableOfInstance.m_dictionary = stateDictionary;
-                savableOfInstance.metadata = metadata;
-                savableOfInstance.LoadState();
-                savableOfInstance.AttachToParent(parent);
-            }
-            else
-                goto warningMessage;
-
-            if (stateDictionary.TryGetValue("ChildData", out object d))
-            {
-                if (d != null)
-                {
-                    List<object> childData = (List<object>)d;
-                    bool failed = false;
-                    foreach (var child in childData)
-                        if (CreateFromSave(child, savableOfInstance) == null)
-                            failed = true;
-                    if (failed)
-                        goto warningMessage;
-                }
-            }
-
-            return obj;
-        warningMessage:
-            Debug.LogWarning("Something went wrong while trying to create the Object: \"" + objectName + "\" ID: \""+ ((ObjectMetadata)meta).thisID+
-                             "\" as child of: \"" + parentName + "\"");
-            return obj;
-        warningMessageSave:
-            Debug.LogWarning("Something went wrong while trying to create the Object: \"" + objectName + " Metadata is null: " + (meta == null) +
-                             "\" as child of: \"" + parentName + "\"");
-            return obj;
-        }
-        // Check if the gameObject already exists and if it not exists,
-        // it will be generated
-        static GameObject CreateIfIdNotExists(ObjectMetadata meta)
-        {
-            SaveableEntity obj = FindID(meta.thisID);
-            if (obj != null)
-                return obj.gameObject;
-            GameObject prefab = SaveablePrefabs.GetPrefab(meta.prefabID);
-            if (prefab == null)
-                return null;
-            GameObject newObj = Instantiate(prefab);
-            SaveableEntity newSav = newObj.GetComponent<SaveableEntity>();
-            SetupInstantiated(meta, newSav);
-            return newObj;
-        }
-
-        // Check if the gameObject already exists and if it exists,
-        // it will be destroyed and regenerated
-        static GameObject Reinstantiate(ObjectMetadata meta)
-        {
-            SaveableEntity obj = FindID(meta.thisID);
-
-            if (obj != null)
-            {
-                m_allSaveables.Remove(meta.thisID);
-
-                DestroyImmediate(obj.gameObject);
-                
-
-            }
-
-            GameObject prefab = SaveablePrefabs.GetPrefab(meta.prefabID);
-            if (prefab == null)
-            {
-                Debug.LogWarning("Can't load object, no prefab was found for " + meta.name);
-                return null;
-            }
-            GameObject newObj = null;
-           // if (Application.isPlaying)
-                newObj = Instantiate(prefab);
-           // else
-           //     newObj = (GameObject)PrefabUtility.InstantiatePrefab(prefab as GameObject);
-            
-            
-            SaveableEntity newSav = newObj.GetComponent<SaveableEntity>();
-            SetupInstantiated(meta, newSav);
-            return newObj;
-        }
-        
-        static void SetupInstantiated(ObjectMetadata meta, SaveableEntity newSav)
-        {
-            newSav.SetID(meta.thisID);
-            newSav.PrefabChildIdentifier();
-            if (meta.deletedChilds.Count > 0)
-            {
-                List<SaveableEntity> childs = ObjectFinder.GetFirstChildLayerOfType<SaveableEntity>(newSav.gameObject);
-                foreach (var child in meta.deletedChilds)
-                {
-                    newSav.DestroyChild(child, childs);
-                }
-            }
-            //m_allSaveables.Add(meta.thisID, newSav);
-        }
         void DestroyChild(string childID, List<SaveableEntity> childs = null)
         {
             
@@ -608,9 +399,7 @@ namespace SaveLoadSystem
         // Use this in the ISaveable interface methode: PostInstantiation(...) to build relations between objects
         public static SaveableEntity FindID(string id)
         {
-            
-            m_allSaveables.TryGetValue(id, out SaveableEntity val); 
-            return val;
+            return SaveableEntityManager.GetSaveable(id);
         }
 
         // Loads the saved data in to all ISaveable components of this gameObject
@@ -638,54 +427,7 @@ namespace SaveLoadSystem
             }
         }
 
-        public static void GlobalPreLoad()
-        {
-            //m_toDelete.Clear();
-           // m_addToAll.Clear();
-            foreach (var saveable in m_allSaveables)
-            {
-                saveable.Value.m_dictionary = null;
-            }
-        }
-        public static void GlobalPostLoad()
-        {
-         /*   foreach (var saveable in m_allSaveables)
-            {
-                saveable.Value.PostLoad();
-            }
-
-            List<string> toRem = new List<string>();
-            foreach (var i in m_allSaveables)
-            {
-                if (i.Value.m_ID == "")
-                    toRem.Add(i.Key);
-            }
-            foreach (var i in toRem)
-            {
-                m_allSaveables.Remove(i);
-            }
-            foreach (var i in m_addToAll)
-            {
-                m_allSaveables.Add(i.m_ID, i);
-            }*/
-
-            
-            
-            foreach (var saveable in m_allSaveables)
-            {
-                saveable.Value.TransformUpdate();
-            }
-            foreach (var saveable in m_allSaveables)
-            {
-                saveable.Value.PostInstantiation();
-            }
-
-            //foreach (var i in m_toDelete)
-            //    DestroyImmediate(i.gameObject);
-          //  m_toDelete.Clear();
-           // m_addToAll.Clear();
-
-        }
+        
 
         // Will set the relations of each saved Object
         //  -> Sets parent

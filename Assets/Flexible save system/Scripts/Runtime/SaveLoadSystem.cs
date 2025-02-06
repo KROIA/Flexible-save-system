@@ -2,6 +2,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using System.IO;
 using System.Runtime.Serialization.Formatters.Binary;
+using static SaveLoadSystem.SaveableEntity;
 
 namespace SaveLoadSystem
 {
@@ -144,12 +145,12 @@ namespace SaveLoadSystem
 
         static void SaveState(Dictionary<string, object> state)
         {
-            SaveableEntity.GlobalSaveState(state);
+            SaveableEntityManager.GlobalSaveState(state);
         }
 
         static void LoadState(Dictionary<string, object> state)
         {
-            SaveableEntity.GlobalCreateFromSave(state);
+            SaveableEntityManager.GlobalCreateFromSave(state);
         }
     }
 }
