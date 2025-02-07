@@ -4,6 +4,8 @@ namespace SaveLoadSystem.Editor
 {
     using UnityEngine;
     using UnityEditor;
+    using UnityEngine.SceneManagement;
+
     [CustomEditor(typeof(SaveLoadSystem))]
     public class SaveLoadSystemEditor : Editor
     {
@@ -78,6 +80,12 @@ namespace SaveLoadSystem.Editor
                 if (GUILayout.Button("Load"))
                 {
                     SaveLoadSystem.Load();
+                }
+
+                //GUILayout.EndHorizontal();
+                if (GUILayout.Button("Reload Scene"))
+                {
+                    SceneManager.LoadScene(SceneManager.GetActiveScene().name);
                 }
 
             }

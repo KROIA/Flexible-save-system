@@ -29,3 +29,7 @@ V01.02.02:
 V01.02.03:
 ~ Moved the static moethodes for managing the SaveableEntity to the SaveableEntityManager class.
   The SaveableEntityManager now also keeps track of all deleted objects so that they are not saved again.
+
+V01.02.04:
++ Deleting objects on load that got instantiated after the last save event.
+~ Objects ID generation changed after reloading the same scene. Objects now hold the same ID as before.

@@ -18,6 +18,26 @@ namespace SaveLoadSystem
             // List with all used IDs to generate unique IDs
             private static Dictionary<string, bool> m_usedIDs = new Dictionary<string, bool>();
 
+            
+            public static void ClearUsedIDs()
+            {
+                m_usedIDs.Clear();
+            }
+            public static void ClearDeletedObjects()
+            {
+                m_deletedObjects.Clear();
+            }
+            public static void ClearAllSaveables()
+            {
+                m_allSaveables.Clear();
+            }
+            public static void Clear()
+            {
+                ClearUsedIDs();
+                ClearDeletedObjects();
+                ClearAllSaveables();
+            }
+
 
             // Adds a SaveableEntity to the dictionary
             public static void AddSaveable(SaveableEntity saveable)
@@ -105,8 +125,17 @@ namespace SaveLoadSystem
                 }
                 GlobalPreLoad();
 
-                foreach (var saveable in state)
+                // Delete objects which are instantiated after the last save
+                foreach(var saveable in list)
                 {
+                    if(!state.ContainsKey(saveable.GetID()))
+                    {
+                        Destroy(saveable.gameObject);
+                    }
+                }
+
+                foreach (var saveable in state)
+                { 
                     m_usedIDs[saveable.Key] = true;
                     CreateFromSave(saveable.Value);
                 }

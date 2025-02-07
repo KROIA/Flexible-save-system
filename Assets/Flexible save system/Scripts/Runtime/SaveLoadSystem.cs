@@ -19,6 +19,11 @@ namespace SaveLoadSystem
             m_instance = this;
             m_basePath = Application.persistentDataPath + "/";
         }
+        private void OnDestroy()
+        {
+            SaveableEntityManager.Clear();
+        }
+
         public static SaveLoadSystem instance
         {
             get

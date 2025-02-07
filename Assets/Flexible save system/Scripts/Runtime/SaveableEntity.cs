@@ -127,8 +127,11 @@ namespace SaveLoadSystem
             // If so, generate a unique ID for this
             if (m_ID != "")
             {
-                if(SaveableEntityManager.IDExists(m_ID))
-                    GenerateID();           
+                // When the object is not already registered in the manager but the ID already exists, generate a new one
+                SaveableEntity fromManager = SaveableEntityManager.GetSaveable(m_ID);
+                if (fromManager != null && fromManager != this && 
+                   SaveableEntityManager.IDExists(m_ID))
+                    GenerateID();
             }
             else
                 GenerateID();
