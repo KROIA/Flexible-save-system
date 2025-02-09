@@ -33,3 +33,4 @@ V01.02.03:
 V01.02.04:
 + Deleting objects on load that got instantiated after the last save event.
 ~ Objects ID generation changed after reloading the same scene. Objects now hold the same ID as before.
+~ Loading a savegame only when the savegame exists, preventing delete of instantiated objects if the loaded safegame is not existant and therefore empty
