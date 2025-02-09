@@ -112,10 +112,13 @@ namespace SaveLoadSystem
         {
             long startT = System.DateTimeOffset.Now.ToUnixTimeMilliseconds();
             var state = LoadFile();
-            SaveablePrefabs.UpdateTable();
-            LoadState(state);
-            long endT = System.DateTimeOffset.Now.ToUnixTimeMilliseconds();
-            Debug.Log("Loading time: " + (endT - startT) + "ms");
+            if(File.Exists(fullSavePath))
+            {
+                SaveablePrefabs.UpdateTable();
+                LoadState(state);
+                long endT = System.DateTimeOffset.Now.ToUnixTimeMilliseconds();
+                Debug.Log("Loading time: " + (endT - startT) + "ms");
+            }            
         }
         public static void Delete()
         {
