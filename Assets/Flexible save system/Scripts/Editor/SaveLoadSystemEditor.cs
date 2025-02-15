@@ -37,7 +37,7 @@ namespace SaveLoadSystem.Editor
                 orange = new GUIStyle(EditorStyles.label);
                 orange.normal.textColor = Color.white;
             }
-            catch (System.Exception e)
+            catch (System.Exception)
             { }
 
         }

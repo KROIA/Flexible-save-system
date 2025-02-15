@@ -7,34 +7,21 @@ namespace SaveLoadSystem.Editor
     [InitializeOnLoad]
     public class StartupUtilities : EditorWindow
     {
-        static int timeInterval;
         public static int timer { get; private set; }
         public static bool autoUpdateID = true;
-        static bool playModeActive = false;
 
         public static System.Action updateIDs { get; set; }
         static StartupUtilities()
         {
             EditorApplication.update += Update;
             EditorApplication.playModeStateChanged += PlayModeChange;
-            timeInterval = 10;
         }
         static void Update()
         {
 
-            /*if (!autoUpdateID || playModeActive)
-                return;
-            int oldTimer = timer;
-            timer = timeInterval - ((int)EditorApplication.timeSinceStartup % timeInterval) - 1;
-            if (timer != 0 && oldTimer == 0)
-            {
-                if (updateIDs != null)
-                    updateIDs();
-            }*/
         }
         static void PlayModeChange(PlayModeStateChange c)
         {
-            //Debug.Log("PlayModeChanged: "+ c.ToString());
             switch (c)
             {
                 case PlayModeStateChange.ExitingEditMode:
@@ -47,17 +34,14 @@ namespace SaveLoadSystem.Editor
                     {
                         GenerateEmptyIDs();
                         CheckForIDConflicts();
-                        playModeActive = false;
                         break;
                     }
                 case PlayModeStateChange.EnteredPlayMode:
                     {
-                        playModeActive = true;
                         break;
                     }
                 case PlayModeStateChange.ExitingPlayMode:
                     {
-                        playModeActive = false;
                         break;
                     }
             }
@@ -65,7 +49,6 @@ namespace SaveLoadSystem.Editor
 
         static void CheckForIDConflicts()
         {
-            //Debug.Log("CheckForIDConflicts");
             CheckForIDConflicts_prefabs();
             CheckForIDConflicts_scriptableObjects();
             CheckForIDConflicts_GameObject();
@@ -96,8 +79,6 @@ namespace SaveLoadSystem.Editor
             for (int i = 0; i < objs.Length; ++i)
             {
                 if (objs[i] == null) continue;
-                // Component[] saveIDs = objs[i].GetComponents(typeof(ISaveID));
-                // for (int j = 0; j < saveIDs.Length; ++j)
                 {
                     if (objs[i] is ISaveID)
                     {
@@ -145,14 +126,11 @@ namespace SaveLoadSystem.Editor
                     // Resolve
                     foreach (var conflict in conflicts)
                     {
-                        // Component[] saveIDs = conflict.Value.GetComponents(typeof(ISaveID));
-                        // for (int j = 0; j < saveIDs.Length; ++j)
                         foreach (var elem in conflict.Value)
                         {
                             if (conflict.Value is ISaveID)
                             {
                                 ISaveID saveID_interface = conflict.Value as ISaveID;
-                                //saveID_interface.SetID(Guid.)
                                 SerializedObject obj = new SerializedObject(elem);
                                 SerializedProperty idProp = obj.FindProperty("m_ID");
                                 if (idProp != null)
@@ -170,11 +148,15 @@ namespace SaveLoadSystem.Editor
         {
             Dictionary<string, GameObject> allIdList = new Dictionary<string, GameObject>();
             Dictionary<string, List<GameObject>> conflicts = new Dictionary<string, List<GameObject>>();
+
+#if UNITY_2021_3_OR_NEWER
+            GameObject[] objs = FindObjectsByType<GameObject>(FindObjectsInactive.Include, FindObjectsSortMode.None);
+#else
             GameObject[] objs = FindObjectsOfType<GameObject>();
+#endif
             for (int i = 0; i < objs.Length; ++i)
             {
                 if (objs[i] == null) continue;
-                //Debug.Log("OBJ: " + objs[i].name);
                 Component[] saveIDs = objs[i].GetComponents(typeof(ISaveID));
                 for (int j = 0; j < saveIDs.Length; ++j)
                 {

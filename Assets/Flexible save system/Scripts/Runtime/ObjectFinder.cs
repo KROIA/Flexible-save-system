@@ -142,7 +142,13 @@ namespace SaveLoadSystem
         }
         public static T GetGameObject<T>(string ID) where T : Object, ISaveID
         {
+#if UNITY_2021_3_OR_NEWER
+            T[] objs = GameObject.FindObjectsByType<T>(FindObjectsInactive.Include, FindObjectsSortMode.None);
+#else
             T[] objs = GameObject.FindObjectsOfType<T>();
+#endif
+
+
             foreach (var i in objs)
                 if (i.GetID() == ID)
                     return i;

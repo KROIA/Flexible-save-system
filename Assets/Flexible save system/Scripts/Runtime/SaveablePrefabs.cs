@@ -21,9 +21,15 @@ namespace SaveLoadSystem
             {
                 if (m_instance == null)
                 {
+#if UNITY_2021_3_OR_NEWER
+                    var list = FindObjectsByType<SaveablePrefabs>(FindObjectsInactive.Include, FindObjectsSortMode.None);
+                    if (list.Length > 0)
+                        m_instance = list[0];
+#else
                     m_instance = FindObjectOfType<SaveablePrefabs>();
+#endif
                 }
-                if(m_instance == null)
+                if (m_instance == null)
                 {
                     m_instance = Resources.Load<SaveablePrefabs>("SaveablePrefabs");
                 }
@@ -62,6 +68,9 @@ namespace SaveLoadSystem
             List<SaveableEntity> toRemove = new List<SaveableEntity>();
             foreach (var obj in instance.m_prefabs)
             {
+                if(obj == null)
+                    continue;
+                
                 string ID = "";
                 SaveableEntity sav = obj;
                 if (!sav)

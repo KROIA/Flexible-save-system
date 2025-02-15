@@ -29,7 +29,16 @@ namespace SaveLoadSystem
             get
             {
                 if (m_instance == null)
+                {
+#if UNITY_2021_3_OR_NEWER
+                    var list = FindObjectsByType<SaveLoadSystem>(FindObjectsInactive.Include, FindObjectsSortMode.None);
+                    if (list.Length > 0)
+                        m_instance = list[0];
+#else
                     m_instance = FindObjectOfType<SaveLoadSystem>();
+#endif
+                }
+                
                 if (m_instance == null)
                     Debug.LogWarning("No instance of SaveLoadSystem in the scene");
                 return m_instance;

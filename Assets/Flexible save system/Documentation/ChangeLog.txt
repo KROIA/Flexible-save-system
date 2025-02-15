@@ -3,6 +3,11 @@ Symbols:
 ~ Changed
 - Removed
 
+V01.02.06:
+~ FindObjectOfType<>() deprecated replacement for unity versions above v2021.3
+~ FindObjectsOfType<>() deprecated replacement for unity versions above v2021.3
+- removed unused code
+
 V01.02.05:
 ~ FindObjectOfType<>() deprecated replacement for unity versions above v2021.3
 
