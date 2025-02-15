@@ -22,7 +22,12 @@ public class #SCRIPTNAME# : SaveIDManagerEditor<YourTypeForWhichTheEditorscriptI
 #if IS_MONO_BEHAVIOUR
     override protected YourTypeForWhichTheEditorscriptIsUsedFor[] GetObjects()
     {
-        return FindObjectsOfType<YourTypeForWhichTheEditorscriptIsUsedFor>();
+#if UNITY_2021_3_OR_NEWER
+        YourTypeForWhichTheEditorscriptIsUsedFor[] list = FindObjectsByType<YourTypeForWhichTheEditorscriptIsUsedFor>(FindObjectsInactive.Include, FindObjectsSortMode.None);
+#else
+        YourTypeForWhichTheEditorscriptIsUsedFor[] list = FindObjectsOfType<YourTypeForWhichTheEditorscriptIsUsedFor>();
+#endif
+        return list;
     }
 #endif
 

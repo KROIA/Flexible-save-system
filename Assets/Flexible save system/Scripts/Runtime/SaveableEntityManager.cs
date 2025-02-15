@@ -93,7 +93,11 @@ namespace SaveLoadSystem
                 }
 
 
+#if UNITY_2021_3_OR_NEWER
+                SaveableEntity[] list = FindObjectsByType<SaveableEntity>(FindObjectsInactive.Include, FindObjectsSortMode.None);
+#else
                 SaveableEntity[] list = FindObjectsOfType<SaveableEntity>();
+#endif
 
                 foreach (var saveable in list)
                 {
@@ -118,7 +122,11 @@ namespace SaveLoadSystem
             {
                 m_deletedObjects.Clear();
                 m_allSaveables.Clear();
+#if UNITY_2021_3_OR_NEWER
+                SaveableEntity[] list = FindObjectsByType<SaveableEntity>(FindObjectsInactive.Include, FindObjectsSortMode.None);
+#else
                 SaveableEntity[] list = FindObjectsOfType<SaveableEntity>();
+#endif
                 foreach (var saveable in list)
                 {
                     m_allSaveables.Add(saveable.GetID(), saveable);

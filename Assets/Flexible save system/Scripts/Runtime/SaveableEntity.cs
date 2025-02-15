@@ -444,7 +444,12 @@ namespace SaveLoadSystem
             }
             if (m_metadata.parentID != "")
             {
-                foreach (var saveavle in FindObjectsOfType<SaveableEntity>())
+#if UNITY_2021_3_OR_NEWER
+                SaveableEntity[] list = FindObjectsByType<SaveableEntity>(FindObjectsInactive.Include, FindObjectsSortMode.None);
+#else
+                SaveableEntity[] list = FindObjectsOfType<SaveableEntity>();
+#endif
+                foreach (var saveavle in list)
                 {
                     if (saveavle.m_ID == m_metadata.parentID)
                     {
