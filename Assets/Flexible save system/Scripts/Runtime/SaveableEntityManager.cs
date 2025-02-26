@@ -248,6 +248,16 @@ namespace SaveLoadSystem
                                 obj = o.gameObject;
                             else if (metadata.hasPrefab)
                                 obj = Reinstantiate(metadata);
+                            else
+                            {
+                                /**
+                                 * The Save load system tried to instantiate a object for which no prefab exists.
+                                 * Non prefab objects can't be instantiated after they are deleted.
+                                 * You can only use non prefab objects to save its data, if they are never deleted.
+                                 */
+                                Debug.LogWarning("Objects that are not prefabs can't be instantiated after they are deleted. To reinstantiate a object on load, it needs to be a prefab. Object: " + metadata.name + " ID: " + metadata.thisID);
+                                return null;
+                            }
                         }
                     }
 
